@@ -1,7 +1,7 @@
-Il server è stato fatto con node.js
+Il server è stato realizzato utilizzando Node.js.
 
-Al momento il client ogni 5000 millisecondi chiede al server se è pronto per ricevere una registrazione tramite una richiesta post HTTP.
+Attualmente, il client richiede al server, ogni 5000 millisecondi, se è pronto a ricevere una registrazione mediante una richiesta POST HTTP.
 
-Se il server da l'ok il client crea un blob prendendo tutti i segmenti video registrati fino a quel momento (presenti nell'array chunkTmp) e li invia al server serve tramite una richiesta post HTTP.
+Se il server dà il suo consenso, il client crea un blob che include tutti i segmenti video registrati fino a quel momento (presenti nell'array chunkTmp) e lo invia nuovamente al server tramite una richiesta POST HTTP.
 
-Il server appena ricevuto il blob lo salva nel formato .webm nella cartella upload.nosync.
+Appena ricevuto il blob, il server provvede a salvarlo nel formato .webm nella cartella "uploads.nosync".

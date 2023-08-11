@@ -12,7 +12,7 @@ app.use(express.json());
 
 //funzione per dare al video il nome dell'orario a cui è stato salvato
 function formatTime() {
-	var date = new Date();
+	const date = new Date();
 	const hours = date.getHours();
 	const minutes = date.getMinutes();
 	const seconds = date.getSeconds();
@@ -21,9 +21,7 @@ function formatTime() {
 	const formattedMinutes = minutes.toString().padStart(2, "0");
 	const formattedSeconds = seconds.toString().padStart(2, "0");
 
-	const formattedTime = `${formattedHours}${formattedMinutes}${formattedSeconds}`;
-
-	return formattedTime;
+	return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
 }
 
 // Configurazione di Multer per gestire il salvataggio dei file video

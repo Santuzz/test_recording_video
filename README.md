@@ -11,3 +11,11 @@ Osservazioni:
 - la dimensione di un chunk va da 100Kb a 6Mb (in media direi su 1Mb)
 - La dimensione arriva a 100Kb se la registrazione è completamente statica
 - l'unico formato video supportato da mediaRecorder è il webm anche se si hanno a disposizione diverse codifiche
+
+Problematiche affrontate:
+- cosa inviare al server: registrazioni che iniziano e finiscono prima di essere inviate (non un'unica rregistrazione spezzettata)
+
+Problematiche da affrontare:
+- bitrete / framerate della registrazione
+- merging dei vari video lato server
+- dimensioni accettabili dei video -> eventuale compressione

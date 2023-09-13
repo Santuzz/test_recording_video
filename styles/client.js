@@ -6,6 +6,7 @@ var bstate;
 var mystatus;
 var url = "http://localhost:3000";
 var mime;
+var startTime=0, endTime;
 
 var displayMediaOptions = {
     video: true, audio: false
@@ -32,7 +33,7 @@ window.onload = function () {
         bstate = true;
         mediaCreate();
         //myTimer = setInterval(checkVideo, timeInterval);
-        myTimer = setInterval(startAndStop, timeInterval);
+        myTimer = setInterval(StopAndStart, timeInterval);
     }, false);
 }
 
@@ -77,10 +78,10 @@ function handleDataAvailable(event) {
     chunks.push(event.data);
 }
 
-function startAndStop() {
+function StopAndStart() {
     console.log("start and stop")
     mediaRecorder.stop();
-    chunks.pop();
+    //chunks.pop();
     try {
         mediaCreate();
 
@@ -103,12 +104,16 @@ async function sendVideoChunks() {
     console.log("send video");
     //mediaRecorder.requestData();
     //il primo invio non va a buon fine perchè non si aspetta che mediaRecorder.requestData() finisca la sua esecuzione, quindi il blob è vuoto
-    console.log(`lunghezza chunk: ${chunks.length}`)
-    blob = new Blob(chunks, {type: "video/webm"});
+
+
+    let chunk =[];
+    chunk.push(chunks[0])
+
+    blob = new Blob(chunk, {type: "video/webm"});
+
     var formData = new FormData();
-    ysFixWebmDuration(blob, timeInterval, function (fixedBlob) {
-        formData.append("video", fixedBlob);
-        console.log(fixedBlob);
+
+    formData.append("video", blob);
         formData.append("user_id", "{{ user.id }}");
         formData.append("exam_id", "{{ exam.id }}");
 
@@ -117,6 +122,41 @@ async function sendVideoChunks() {
             if (this.readyState === 4 && this.status === 200) {
                 // console.log(xhttp.responseText);
                 UpdateStatus("Video successfully sent.", "ok");
+                chunks.shift();
+                console.log(`lunghezza chunk: ${chunks.length}`)
+                if (chunks.length>0){
+                    sendVideoChunks();
+                }
+            }
+
+            if (this.readyState === 4 && this.status >= 400) {
+                UpdateStatus("Error sending the video!", "error");
+            }
+        };
+
+        xhttp.open("POST", url + "/proctoring/sendvideo", true);
+        xhttp.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+        xhttp.send(formData);
+        UpdateStatus("Video sended", "info");
+
+
+/*
+        //Funzione che aggiunge allo spezzone registrato il metadato della durata
+    ysFixWebmDuration(blob, timeInterval, function (fixedBlob) {
+        formData.append("video", fixedBlob);
+        formData.append("user_id", "{{ user.id }}");
+        formData.append("exam_id", "{{ exam.id }}");
+
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                // console.log(xhttp.responseText);
+                UpdateStatus("Video successfully sent.", "ok");
+                chunks.shift();
+                console.log(`lunghezza chunk: ${chunks.length}`)
+                if (chunks.length>0){
+                    sendVideoChunks();
+                }
             }
 
             if (this.readyState === 4 && this.status >= 400) {
@@ -130,7 +170,7 @@ async function sendVideoChunks() {
         UpdateStatus("Video sended", "info");
 
     });
-
+*/
 }
 
 // chiede al server se è pronto per ricevere un video

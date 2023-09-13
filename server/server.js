@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 
 var files = [];
+var progressive=0;
 
 app.use(cors());
 app.use(express.json());
@@ -20,34 +21,38 @@ function formatTime() {
 	const formattedHours = hours.toString().padStart(2, "0");
 	const formattedMinutes = minutes.toString().padStart(2, "0");
 	const formattedSeconds = seconds.toString().padStart(2, "0");
+	progressive ++;
 
-	return `${formattedHours}${formattedMinutes}${formattedSeconds}`;
+	return `${formattedHours}${formattedMinutes}${formattedSeconds}_${progressive}`;
 }
 
 // Configurazione di Multer per gestire il salvataggio dei file video
 const storage = multer.diskStorage({
-	destination: (req, file, cb) => {
-		//Alla cartella di destinazione ho dovuto aggiungere ".sync" altrimenti tutti i video mi venivano salvati nel cloud intasandolo
-		cb(null, "uploads.nosync/");
-	},
-	filename: (req, file, cb) => {
-		const filename = formatTime();
-		cb(null, filename + ".webm");
-	},
+  destination: (req, file, cb) => {
+    // Cartella di destinazione (assicurati che esista)
+    cb(null, "uploads.nosync/");
+  },
+  filename: (req, file, cb) => {
+    // Genera un nome unico per ogni file caricato
+    const filename = formatTime();
+    cb(null, filename + ".webm");
+  },
 });
 
 const upload = multer({ storage });
 
 // Endpoint per la ricezione dei video
-app.post("/proctoring/sendvideo", upload.single("video"), (req, res) => {
-	const file = req.file;
-	if (!file) {
-		console.log("errore nella ricezione video")
-		return res.status(400).json({ error: "No video file received" });
-	}
-	console.log("video ricevuto")
-	return res.status(200).json({ message: "Video successfully received" });
+app.post("/proctoring/sendvideo", upload.array("video", 100), (req, res) => {
+  const files = req.files;
+  if (!files || files.length === 0) {
+    console.log("Nessun file video ricevuto");
+    return res.status(400).json({ error: "Nessun file video ricevuto" });
+  }
+
+  console.log(`${files.length} video ricevuti`);
+  return res.status(200).json({ message: "Video ricevuti con successo" });
 });
+
 
 // Middleware per gestire FormData nell'endpoint /proctoring/checksend
 app.use("/proctoring/checksend", upload.none());

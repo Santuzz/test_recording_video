@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Endpoint per la ricezione dei video
-app.post("/proctoring/sendvideo", upload.array("video", 100), (req, res) => {
+app.post("/proctoring/sendvideo", upload.array("blob", 100), (req, res) => {
   const files = req.files;
   if (!files || files.length === 0) {
     console.log("Nessun file video ricevuto");

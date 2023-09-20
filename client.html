@@ -1,37 +1,35 @@
 <html>
 
 <head>
-	<title>Proctor</title>
-	<meta charset="UTF-8" />
-	<link href="styles/client.css" rel="stylesheet" type="text/css">
-
+    <title>Proctor</title>
+    <meta charset="UTF-8"/>
+    <link href="styles/client.css" rel="stylesheet" type="text/css">
 
 
 </head>
 
 <body>
-	<div class="text-center p-1" style="background-color: rgba(249, 249, 249, 0.8)">
-		<h1 id="orario-data"></h1>
-	</div>
-	<div id="status-div-alert" class="alert alert-warning" role="alert">
-		Status: <span id="mystatus" style="display: inline-block;"></span>
-	</div>
-	<button class="btn btn-success" id="start"> Start Sharing </button>
+<div class="text-center p-1" style="background-color: rgba(249, 249, 249, 0.8)">
+    <h1 id="orario-data"></h1>
+</div>
+<div id='sharing'>
+    <div id="status-div-alert" class="alert alert-warning" role="alert">
+        Status: <span id="mystatus" style="display: inline-block;"></span>
+    </div>
+    <button class="btn btn-success" id="start"> Start Sharing</button>
 
-	<p>
-		<video id="video" autoplay crossOrigin="Anonymous"></video>
-		<video id="videoComplete" width="600px" controls></video>
-	</p>
-	<hr>
+    <p>
+        <video id="video" autoplay crossOrigin="Anonymous"></video>
+        <canvas id="canvas"></canvas>
+    </p>
+</div>
+<hr>
 
 
-	<script src="styles/client.js"></script>
-
-
+<script src="styles/client.js"></script>
 
 
 </body>
-
 
 
 </html>
